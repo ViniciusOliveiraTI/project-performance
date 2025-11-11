@@ -1,6 +1,6 @@
-package com.viniciusdev.project_performance.model.repositories;
+package com.viniciusdev.project_performance.repositories;
 
-import com.viniciusdev.project_performance.model.entities.Proposal;
+import com.viniciusdev.project_performance.entities.Proposal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

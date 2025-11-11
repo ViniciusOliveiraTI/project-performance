@@ -1,6 +1,6 @@
-package com.viniciusdev.project_performance.model.entities;
+package com.viniciusdev.project_performance.entities;
 
-import com.viniciusdev.project_performance.model.enums.ProposalStatus;
+import com.viniciusdev.project_performance.enums.ProposalStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -18,8 +18,11 @@ public class Proposal {
     private Integer code;
     private String description;
     // private User manager;
-    // private Customer customer;
     private LocalDate emissionDate;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Enumerated(EnumType.STRING)
     private ProposalStatus status;
@@ -27,12 +30,17 @@ public class Proposal {
 
     public Proposal() {}
 
-    public Proposal(Integer code, String description, LocalDate emissionDate, ProposalStatus status, BigDecimal offeredPrice) {
+    public Proposal(Integer code, String description, LocalDate emissionDate, ProposalStatus status, BigDecimal offeredPrice, Customer customer) {
         this.code = code;
         this.description = description;
         this.emissionDate = emissionDate;
         this.status = status;
         this.offeredPrice = offeredPrice;
+        this.customer = customer;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Integer getCode() {
@@ -75,6 +83,14 @@ public class Proposal {
         this.offeredPrice = offeredPrice;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -94,6 +110,8 @@ public class Proposal {
                 ", code=" + code +
                 ", description='" + description + '\'' +
                 ", emissionDate=" + emissionDate +
+                ", customer=" + customer +
+                ", status=" + status +
                 ", offeredPrice=" + offeredPrice +
                 '}';
     }

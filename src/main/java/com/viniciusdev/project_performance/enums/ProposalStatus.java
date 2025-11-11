@@ -1,4 +1,4 @@
-package com.viniciusdev.project_performance.model.enums;
+package com.viniciusdev.project_performance.enums;
 
 public enum ProposalStatus {
     STAND_BY,
