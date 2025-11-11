@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_proposal")
@@ -23,6 +24,9 @@ public class Proposal {
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    @OneToMany(mappedBy = "proposal")
+    private Set<ProposalQuotation> proposalQuotations;
 
     @Enumerated(EnumType.STRING)
     private ProposalStatus status;
