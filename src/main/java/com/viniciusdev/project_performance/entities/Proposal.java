@@ -28,8 +28,12 @@ public class Proposal {
     @OneToMany(mappedBy = "proposal")
     private Set<ProposalQuotation> proposalQuotations;
 
+    @OneToMany(mappedBy = "proposal")
+    private Set<Project> projects;
+
     @Enumerated(EnumType.STRING)
     private ProposalStatus status;
+
     private BigDecimal offeredPrice;
 
     public Proposal() {}
