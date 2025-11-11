@@ -3,8 +3,10 @@ package com.viniciusdev.project_performance.entities;
 import com.viniciusdev.project_performance.enums.ProposalQuotationStatus;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_proposal_quotation")
@@ -17,6 +19,9 @@ public class ProposalQuotation {
     @ManyToOne
     @JoinColumn(name = "proposal_id", nullable = false)
     private Proposal proposal;
+
+    @OneToMany(mappedBy = "proposalQuotation")
+    private Set<ProposalQuotationItem> proposalQuotationItems;
 
     private LocalDate creationDate;
     private Integer version;
@@ -67,6 +72,18 @@ public class ProposalQuotation {
 
     public Long getId() {
         return id;
+    }
+
+    public BigDecimal totalCharge() {
+        return proposalQuotationItems.stream()
+                .map(ProposalQuotationItem::getCharge)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal totalPrice() {
+        return proposalQuotationItems.stream()
+                .map(ProposalQuotationItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override

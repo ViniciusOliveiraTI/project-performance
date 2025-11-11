@@ -10,10 +10,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface ProposalQuotationMapper {
-    ProposalQuotation requestToEntity(ProposalQuotationRequest proposalRequest);
-    ProposalQuotationResponse entityToResponse(ProposalQuotation proposal);
+    ProposalQuotation requestToEntity(ProposalQuotationRequest proposalQuotationRequest);
+    ProposalQuotationResponse entityToResponse(ProposalQuotation proposalQuotation);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
-    void updateEntityFromRequest(@MappingTarget ProposalQuotation proposal, ProposalQuotationRequest proposalRequest);
+    void updateEntityFromRequest(@MappingTarget ProposalQuotation proposalQuotation, ProposalQuotationRequest proposalQuotationRequest);
 }
 
