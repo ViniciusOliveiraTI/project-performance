@@ -1,5 +1,7 @@
 package com.viniciusdev.project_performance.features.customer;
 
+import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.common.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerRequest;
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerResponse;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
@@ -27,7 +29,7 @@ public class CustomerService {
     public CustomerResponse findById(Long id) {
         return mapper.entityToResponse(
                 repository.findById(id)
-                .orElseThrow(RuntimeException::new));
+                .orElseThrow(() -> new NotFoundException("Customer with id '%d' not found".formatted(id))));
     }
 
     public CustomerResponse create(CustomerRequest customerRequest) {
@@ -42,20 +44,20 @@ public class CustomerService {
 
     public void deleteById(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Customer %d not found".formatted(id));
+            throw new NotFoundException("Customer with id '%d' not found".formatted(id));
         };
         try {
             repository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("Customer %d cannot be deleted due to relations".formatted(id));
+            throw new DataIntegrityException("Customer with id '%d' cannot be deleted due to relations".formatted(id));
         }
     }
 
     public CustomerResponse update(CustomerRequest customerRequest, Long id) {
 
         Customer customer = repository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Customer with id '%d' not found".formatted(id)));
 
         mapper.updateEntityFromRequest(customer, customerRequest);
 

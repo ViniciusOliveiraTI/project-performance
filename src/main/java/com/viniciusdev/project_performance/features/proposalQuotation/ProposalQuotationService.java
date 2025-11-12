@@ -1,5 +1,7 @@
 package com.viniciusdev.project_performance.features.proposalQuotation;
 
+import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.common.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.proposal.ProposalRepository;
 import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
 import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationRequest;
@@ -32,14 +34,14 @@ public class ProposalQuotationService {
     public ProposalQuotationResponse findById(Long id) {
         return mapper.entityToResponse(
                 proposalQuotationRepository.findById(id)
-                .orElseThrow(RuntimeException::new));
+                .orElseThrow(() -> new NotFoundException("Proposal Quotation with id '%d' not found".formatted(id))));
     }
 
     public ProposalQuotationResponse create(ProposalQuotationRequest proposalQuotationRequest) {
 
         Proposal proposal = proposalRepository
                 .findById(proposalQuotationRequest.proposalId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(proposalQuotationRequest.proposalId())));
 
         ProposalQuotation proposalQuotation = mapper.requestToEntity(proposalQuotationRequest);
 
@@ -53,25 +55,25 @@ public class ProposalQuotationService {
 
     public void deleteById(Long id) {
         if (!proposalQuotationRepository.existsById(id)) {
-            throw new RuntimeException("ProposalQuotation %d not found".formatted(id));
+            throw new NotFoundException("Proposal Quotation with id '%d' not found".formatted(id));
         };
         try {
             proposalQuotationRepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("ProposalQuotation %d cannot be deleted due to relations".formatted(id));
+            throw new DataIntegrityException("Proposal Quotation with id '%d' cannot be deleted due to relations".formatted(id));
         }
     }
 
     public ProposalQuotationResponse update(ProposalQuotationRequest proposalQuotationRequest, Long id) {
 
         ProposalQuotation proposalQuotation = proposalQuotationRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Proposal Quotation with id '%d' not found".formatted(id)));
 
         mapper.updateEntityFromRequest(proposalQuotation, proposalQuotationRequest);
 
         Proposal proposal = proposalRepository.findById(proposalQuotationRequest.proposalId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(proposalQuotationRequest.proposalId())));
 
         proposalQuotation.setProposal(proposal);
 

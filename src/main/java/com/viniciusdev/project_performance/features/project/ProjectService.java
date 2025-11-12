@@ -1,5 +1,6 @@
 package com.viniciusdev.project_performance.features.project;
 
+import com.viniciusdev.project_performance.common.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectRequest;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectResponse;
 import com.viniciusdev.project_performance.features.project.entities.Project;
@@ -32,14 +33,14 @@ public class ProjectService {
     public ProjectResponse findById(Long id) {
         return mapper.entityToResponse(
                 projectrepository.findById(id)
-                .orElseThrow(RuntimeException::new));
+                .orElseThrow(() -> new NotFoundException("Project with id '%d' not found".formatted(id))));
     }
 
     public ProjectResponse create(ProjectRequest projectRequest) {
 
         Proposal proposal = proposalRepository
                 .findById(projectRequest.proposalId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(projectRequest.proposalId())));
 
         Project project = mapper.requestToEntity(projectRequest);
 
@@ -53,25 +54,25 @@ public class ProjectService {
 
     public void deleteById(Long id) {
         if (!projectrepository.existsById(id)) {
-            throw new RuntimeException("Project %d not found".formatted(id));
+            throw new NotFoundException("Project with id '%d' not found".formatted(id));
         };
         try {
             projectrepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("Project %d cannot be deleted due to relations".formatted(id));
+            throw new NotFoundException("Project with id '%d' cannot be deleted due to relations".formatted(id));
         }
     }
 
     public ProjectResponse update(ProjectRequest projectRequest, Long id) {
 
         Project project = projectrepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Project with id '%d' not found".formatted(id)));
 
         mapper.updateEntityFromRequest(project, projectRequest);
 
         Proposal proposal = proposalRepository.findById(projectRequest.proposalId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(projectRequest.proposalId())));
 
         project.setProposal(proposal);
 

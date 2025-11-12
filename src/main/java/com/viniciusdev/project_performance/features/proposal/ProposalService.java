@@ -1,5 +1,7 @@
 package com.viniciusdev.project_performance.features.proposal;
 
+import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.common.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
 import com.viniciusdev.project_performance.features.proposal.dtos.ProposalRequest;
 import com.viniciusdev.project_performance.features.proposal.dtos.ProposalResponse;
@@ -32,14 +34,14 @@ public class ProposalService {
     public ProposalResponse findById(Long id) {
         return mapper.entityToResponse(
                 proposalrepository.findById(id)
-                .orElseThrow(RuntimeException::new));
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(id))));
     }
 
     public ProposalResponse create(ProposalRequest proposalRequest) {
 
         Customer customer = customerRepository
                 .findById(proposalRequest.customerId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Customer with id '%d' not found".formatted(proposalRequest.customerId())));
 
         Proposal proposal = mapper.requestToEntity(proposalRequest);
 
@@ -53,25 +55,25 @@ public class ProposalService {
 
     public void deleteById(Long id) {
         if (!proposalrepository.existsById(id)) {
-            throw new RuntimeException("Proposal %d not found".formatted(id));
+            throw new NotFoundException("Proposal with id '%d' not found".formatted(id));
         };
         try {
             proposalrepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("Proposal %d cannot be deleted due to relations".formatted(id));
+            throw new DataIntegrityException("Proposal with id '%d' cannot be deleted due to relations".formatted(id));
         }
     }
 
     public ProposalResponse update(ProposalRequest proposalRequest, Long id) {
 
         Proposal proposal = proposalrepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(id)));
 
         mapper.updateEntityFromRequest(proposal, proposalRequest);
 
         Customer customer = customerRepository.findById(proposalRequest.customerId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Customer with id '%d' not found".formatted(proposalRequest.customerId())));
 
         proposal.setCustomer(customer);
 
