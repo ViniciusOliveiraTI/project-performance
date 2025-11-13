@@ -2,6 +2,8 @@ package com.viniciusdev.project_performance.features.proposalQuotationItem;
 
 import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
 import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.features.proposalQuotation.ProposalQuotationMapper;
+import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationResponse;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemRequest;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemResponse;
 import com.viniciusdev.project_performance.features.proposalQuotation.entities.ProposalQuotation;
@@ -12,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProposalQuotationItemService {
@@ -23,16 +26,19 @@ public class ProposalQuotationItemService {
     private ProposalQuotationItemRepository proposalQuotationItemRepository;
 
     @Autowired
-    private ProposalQuotationItemMapper mapper;
+    private ProposalQuotationItemMapper proposalQuotationItemMapper;
+
+    @Autowired
+    private ProposalQuotationMapper proposalQuotationMapper;
 
     public List<ProposalQuotationItemResponse> findAll() {
         return proposalQuotationItemRepository.findAll()
                 .stream()
-                .map(mapper::entityToResponse).toList();
+                .map(proposalQuotationItemMapper::entityToResponse).toList();
     }
 
-    public ProposalQuotationItemResponse findById(Long id) {
-        return mapper.entityToResponse(
+    public ProposalQuotationItemResponse findById(UUID id) {
+        return proposalQuotationItemMapper.entityToResponse(
                 proposalQuotationItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Proposal Quotation Item with id '%d' not found".formatted(id))));
     }
@@ -43,17 +49,17 @@ public class ProposalQuotationItemService {
                 .findById(proposalQuotationItemRequest.proposalQuotationId())
                 .orElseThrow(() -> new NotFoundException("Proposal Quotation with id '%d' not found".formatted(proposalQuotationItemRequest.proposalQuotationId())));
 
-        ProposalQuotationItem proposalQuotationItem = mapper.requestToEntity(proposalQuotationItemRequest);
+        ProposalQuotationItem proposalQuotationItem = proposalQuotationItemMapper.requestToEntity(proposalQuotationItemRequest);
 
         proposalQuotationItem.setProposalQuotation(proposalQuotation);
 
         ProposalQuotationItem saved = proposalQuotationItemRepository.save(proposalQuotationItem);
 
-        return mapper.entityToResponse(saved);
+        return proposalQuotationItemMapper.entityToResponse(saved);
 
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         if (!proposalQuotationItemRepository.existsById(id)) {
             throw new NotFoundException("Proposal Quotation Item with id '%d' not found".formatted(id));
         };
@@ -65,18 +71,27 @@ public class ProposalQuotationItemService {
         }
     }
 
-    public ProposalQuotationItemResponse update(ProposalQuotationItemRequest proposalQuotationItemRequest, Long id) {
+    public ProposalQuotationItemResponse update(ProposalQuotationItemRequest proposalQuotationItemRequest, UUID id) {
 
         ProposalQuotationItem proposalQuotationItem = proposalQuotationItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Proposal Quotation Item with id '%d' not found".formatted(id)));
 
-        mapper.updateEntityFromRequest(proposalQuotationItem, proposalQuotationItemRequest);
+        proposalQuotationItemMapper.updateEntityFromRequest(proposalQuotationItem, proposalQuotationItemRequest);
 
         ProposalQuotation proposalQuotation = proposalQuotationRepository.findById(proposalQuotationItemRequest.proposalQuotationId())
                 .orElseThrow(() -> new NotFoundException("Proposal Quotation with id '%d' not found".formatted(proposalQuotationItemRequest.proposalQuotationId())));
 
         proposalQuotationItem.setProposalQuotation(proposalQuotation);
 
-        return mapper.entityToResponse(proposalQuotationItemRepository.save(proposalQuotationItem));
+        return proposalQuotationItemMapper.entityToResponse(proposalQuotationItemRepository.save(proposalQuotationItem));
+    }
+
+    public ProposalQuotationResponse findQuotation(UUID id) {
+
+        ProposalQuotationItem proposalQuotationItem = proposalQuotationItemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Proposal Quotation Item with id '%d' not found".formatted(id)));
+
+        return proposalQuotationMapper.entityToResponse(proposalQuotationItem.getProposalQuotation());
+
     }
 }

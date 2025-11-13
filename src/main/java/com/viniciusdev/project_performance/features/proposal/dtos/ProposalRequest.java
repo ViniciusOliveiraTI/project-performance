@@ -4,5 +4,6 @@ import com.viniciusdev.project_performance.features.proposal.entities.ProposalSt
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
-public record ProposalRequest(Integer code, String description, LocalDate emissionDate, ProposalStatus status, BigDecimal offeredPrice, Long customerId) {}
+public record ProposalRequest(Integer code, String description, LocalDate emissionDate, ProposalStatus status, BigDecimal offeredPrice, UUID customerId) {}

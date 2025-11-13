@@ -4,5 +4,7 @@ import com.viniciusdev.project_performance.features.proposalQuotation.entities.P
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface ProposalQuotationRepository extends JpaRepository<ProposalQuotation, Long> {}
+public interface ProposalQuotationRepository extends JpaRepository<ProposalQuotation, UUID> {}

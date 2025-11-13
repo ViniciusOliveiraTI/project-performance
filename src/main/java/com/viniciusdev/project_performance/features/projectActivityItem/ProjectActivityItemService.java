@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProjectActivityItemService {
@@ -31,17 +32,17 @@ public class ProjectActivityItemService {
                 .map(mapper::entityToResponse).toList();
     }
 
-    public ProjectActivityItemResponse findById(Long id) {
+    public ProjectActivityItemResponse findById(UUID id) {
         return mapper.entityToResponse(
                 projectActivityItemRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%d' not found".formatted(id))));
+                        .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%s' not found".formatted(id))));
     }
 
     public ProjectActivityItemResponse create(ProjectActivityItemRequest projectActivityItemRequest) {
 
         ProjectActivity projectActivity = projectActivityRepository
                 .findById(projectActivityItemRequest.activityId())
-                .orElseThrow(() -> new NotFoundException("Project Activity with id '%d' not found".formatted(projectActivityItemRequest.activityId())));
+                .orElseThrow(() -> new NotFoundException("Project Activity with id '%s' not found".formatted(projectActivityItemRequest.activityId())));
 
         ProjectActivityItem projectActivityItem = mapper.requestToEntity(projectActivityItemRequest);
 
@@ -53,27 +54,27 @@ public class ProjectActivityItemService {
 
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         if (!projectActivityItemRepository.existsById(id)) {
-            throw new NotFoundException("Project Activity Item with id '%d' not found".formatted(id));
+            throw new NotFoundException("Project Activity Item with id '%s' not found".formatted(id));
         };
         try {
             projectActivityItemRepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityException("Project Activity Item with id '%d' cannot be deleted due to relations".formatted(id));
+            throw new DataIntegrityException("Project Activity Item with id '%s' cannot be deleted due to relations".formatted(id));
         }
     }
 
-    public ProjectActivityItemResponse update(ProjectActivityItemRequest projectActivityItemRequest, Long id) {
+    public ProjectActivityItemResponse update(ProjectActivityItemRequest projectActivityItemRequest, UUID id) {
 
         ProjectActivityItem projectActivityItem = projectActivityItemRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%d' not found".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%s' not found".formatted(id)));
 
         mapper.updateEntityFromRequest(projectActivityItem, projectActivityItemRequest);
 
         ProjectActivity projectActivity = projectActivityRepository.findById(projectActivityItemRequest.activityId())
-                .orElseThrow(() -> new NotFoundException("Project Activity with id '%d' not found".formatted(projectActivityItemRequest.activityId())));
+                .orElseThrow(() -> new NotFoundException("Project Activity with id '%s' not found".formatted(projectActivityItemRequest.activityId())));
 
         projectActivityItem.setProjectActivity(projectActivity);
 

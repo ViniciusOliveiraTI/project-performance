@@ -6,5 +6,6 @@ import com.viniciusdev.project_performance.features.projectActivity.entities.Pro
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public record ProjectActivityRequest(Long projectId, String description, LocalDate expectedStartDate, LocalDateTime expectedEndDate, ProjectActivityStatus status) { }
+public record ProjectActivityRequest(UUID projectId, String description, LocalDate expectedStartDate, LocalDateTime expectedEndDate, ProjectActivityStatus status) { }

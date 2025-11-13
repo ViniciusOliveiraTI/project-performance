@@ -2,16 +2,24 @@ package com.viniciusdev.project_performance.features.proposal;
 
 import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
 import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.features.customer.CustomerMapper;
+import com.viniciusdev.project_performance.features.customer.dtos.CustomerResponse;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
+import com.viniciusdev.project_performance.features.project.ProjectMapper;
+import com.viniciusdev.project_performance.features.project.dtos.ProjectResponse;
 import com.viniciusdev.project_performance.features.proposal.dtos.ProposalRequest;
 import com.viniciusdev.project_performance.features.proposal.dtos.ProposalResponse;
 import com.viniciusdev.project_performance.features.customer.CustomerRepository;
 import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
+import com.viniciusdev.project_performance.features.proposalQuotation.ProposalQuotationMapper;
+import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProposalService {
@@ -23,60 +31,100 @@ public class ProposalService {
     private ProposalRepository proposalrepository;
 
     @Autowired
-    private ProposalMapper mapper;
+    private ProposalMapper proposalMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
+
+    @Autowired
+    private CustomerMapper customerMapper;
+
+    @Autowired
+    private ProposalQuotationMapper proposalQuotationMapper;
 
     public List<ProposalResponse> findAll() {
         return proposalrepository.findAll()
                 .stream()
-                .map(mapper::entityToResponse).toList();
+                .map(proposalMapper::entityToResponse).toList();
     }
 
-    public ProposalResponse findById(Long id) {
-        return mapper.entityToResponse(
+    public ProposalResponse findById(UUID id) {
+        return proposalMapper.entityToResponse(
                 proposalrepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(id))));
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id))));
     }
 
     public ProposalResponse create(ProposalRequest proposalRequest) {
 
         Customer customer = customerRepository
                 .findById(proposalRequest.customerId())
-                .orElseThrow(() -> new NotFoundException("Customer with id '%d' not found".formatted(proposalRequest.customerId())));
+                .orElseThrow(() -> new NotFoundException("Customer with id '%s' not found".formatted(proposalRequest.customerId())));
 
-        Proposal proposal = mapper.requestToEntity(proposalRequest);
+        Proposal proposal = proposalMapper.requestToEntity(proposalRequest);
 
         proposal.setCustomer(customer);
 
         Proposal saved = proposalrepository.save(proposal);
 
-        return mapper.entityToResponse(saved);
+        return proposalMapper.entityToResponse(saved);
 
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         if (!proposalrepository.existsById(id)) {
-            throw new NotFoundException("Proposal with id '%d' not found".formatted(id));
+            throw new NotFoundException("Proposal with id '%s' not found".formatted(id));
         };
         try {
             proposalrepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityException("Proposal with id '%d' cannot be deleted due to relations".formatted(id));
+            throw new DataIntegrityException("Proposal with id '%s' cannot be deleted due to relations".formatted(id));
         }
     }
 
-    public ProposalResponse update(ProposalRequest proposalRequest, Long id) {
+    public ProposalResponse update(ProposalRequest proposalRequest, UUID id) {
 
         Proposal proposal = proposalrepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id)));
 
-        mapper.updateEntityFromRequest(proposal, proposalRequest);
+        proposalMapper.updateEntityFromRequest(proposal, proposalRequest);
 
         Customer customer = customerRepository.findById(proposalRequest.customerId())
-                .orElseThrow(() -> new NotFoundException("Customer with id '%d' not found".formatted(proposalRequest.customerId())));
+                .orElseThrow(() -> new NotFoundException("Customer with id '%s' not found".formatted(proposalRequest.customerId())));
 
         proposal.setCustomer(customer);
 
-        return mapper.entityToResponse(proposalrepository.save(proposal));
+        return proposalMapper.entityToResponse(proposalrepository.save(proposal));
+    }
+
+    public List<ProjectResponse> findAllProjects(UUID id) {
+
+        Proposal proposal = proposalrepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id)));
+
+        return proposal.getProjects()
+                .stream()
+                .map(projectMapper::entityToResponse)
+                .toList();
+    }
+
+    public List<ProposalQuotationResponse> findAllProposalQuotation(UUID id) {
+
+        Proposal proposal = proposalrepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id)));
+
+        return proposal.getProposalQuotations()
+                .stream()
+                .map(proposalQuotationMapper::entityToResponse)
+                .toList();
+    }
+
+    public CustomerResponse findCustomer(UUID id) {
+
+        Proposal proposal = proposalrepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id)));
+
+        return customerMapper.entityToResponse(proposal.getCustomer());
+
     }
 }

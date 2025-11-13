@@ -1,7 +1,10 @@
 package com.viniciusdev.project_performance.features.proposalQuotation;
 
+import com.viniciusdev.project_performance.features.proposal.dtos.ProposalResponse;
 import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationRequest;
 import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationResponse;
+import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemResponse;
+import com.viniciusdev.project_performance.features.proposalQuotationItem.entities.ProposalQuotationItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/proposal-quotation")
@@ -25,7 +29,7 @@ public class ProposalQuotationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProposalQuotationResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<ProposalQuotationResponse> findById(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
                 .body(service.findById(id));
@@ -47,15 +51,29 @@ public class ProposalQuotationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProposalQuotationResponse> update(@PathVariable Long id, @RequestBody ProposalQuotationRequest proposalQuotationRequest) {
+    public ResponseEntity<ProposalQuotationResponse> update(@PathVariable UUID id, @RequestBody ProposalQuotationRequest proposalQuotationRequest) {
         return ResponseEntity.ok()
                 .body(service.update(proposalQuotationRequest, id));
+    }
+
+    @GetMapping("/{id}/items")
+    public ResponseEntity<List<ProposalQuotationItemResponse>> findAllProposalQuotationItem(@PathVariable UUID id) {
+        return ResponseEntity
+                .ok()
+                .body(service.findAllProposalQuotationItem(id));
+    }
+
+    @GetMapping("/{id}/proposal")
+    public ResponseEntity<ProposalResponse> findProposal(@PathVariable UUID id) {
+        return ResponseEntity
+                .ok()
+                .body(service.findProposal(id));
     }
 
 }

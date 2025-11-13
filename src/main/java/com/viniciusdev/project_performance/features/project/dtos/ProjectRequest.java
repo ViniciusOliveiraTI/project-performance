@@ -4,5 +4,6 @@ import com.viniciusdev.project_performance.features.project.entities.ProjectStat
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
-public record ProjectRequest(ProjectStatus status, BigDecimal approvedPrice, LocalDate approvalDate, Long proposalId) { }
+public record ProjectRequest(ProjectStatus status, BigDecimal approvedPrice, LocalDate approvalDate, UUID proposalId) { }

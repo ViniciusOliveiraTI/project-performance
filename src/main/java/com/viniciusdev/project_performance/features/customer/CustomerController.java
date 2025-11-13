@@ -2,6 +2,7 @@ package com.viniciusdev.project_performance.features.customer;
 
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerRequest;
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerResponse;
+import com.viniciusdev.project_performance.features.proposal.dtos.ProposalResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/customer")
@@ -25,7 +27,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<CustomerResponse> findById(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
                 .body(service.findById(id));
@@ -47,15 +49,20 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerResponse> update(@PathVariable Long id, @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> update(@PathVariable UUID id, @RequestBody CustomerRequest customerRequest) {
         return ResponseEntity.ok()
                 .body(service.update(customerRequest, id));
+    }
+
+    @GetMapping("/{id}/proposals")
+    public ResponseEntity<List<ProposalResponse>> findAllProposals(@PathVariable UUID id) {
+        return ResponseEntity.ok().body(service.findAllProposals(id));
     }
 
 }

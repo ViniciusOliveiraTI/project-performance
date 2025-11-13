@@ -30,6 +30,13 @@ public class Proposal {
     @Column(name = "emission_date")
     private LocalDate emissionDate;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ProposalStatus status;
+
+    @Column(name = "offered_price")
+    private BigDecimal offeredPrice;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -39,13 +46,6 @@ public class Proposal {
 
     @OneToMany(mappedBy = "proposal")
     private Set<Project> projects;
-
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private ProposalStatus status;
-
-    @Column(name = "offered_price")
-    private BigDecimal offeredPrice;
 
     public Proposal() {}
 

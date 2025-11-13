@@ -1,5 +1,6 @@
 package com.viniciusdev.project_performance.features.proposalQuotationItem;
 
+import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationResponse;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemRequest;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/proposal-quotation-item")
@@ -25,7 +27,7 @@ public class ProposalQuotationItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProposalQuotationItemResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<ProposalQuotationItemResponse> findById(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
                 .body(service.findById(id));
@@ -47,15 +49,22 @@ public class ProposalQuotationItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProposalQuotationItemResponse> update(@PathVariable Long id, @RequestBody ProposalQuotationItemRequest proposalQuotationItemRequest) {
+    public ResponseEntity<ProposalQuotationItemResponse> update(@PathVariable UUID id, @RequestBody ProposalQuotationItemRequest proposalQuotationItemRequest) {
         return ResponseEntity.ok()
                 .body(service.update(proposalQuotationItemRequest, id));
+    }
+
+    @GetMapping("/{id}/quotation")
+    public ResponseEntity<ProposalQuotationResponse> findQuotation(@PathVariable UUID id) {
+        return ResponseEntity
+                .ok()
+                .body(service.findQuotation(id));
     }
 
 }

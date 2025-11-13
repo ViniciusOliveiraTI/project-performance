@@ -4,5 +4,7 @@ import com.viniciusdev.project_performance.features.projectActivityItem.entities
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface ProjectActivityItemRepository extends JpaRepository<ProjectActivityItem, Long> {}
+public interface ProjectActivityItemRepository extends JpaRepository<ProjectActivityItem, UUID> {}

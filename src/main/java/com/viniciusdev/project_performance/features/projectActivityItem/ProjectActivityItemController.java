@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/project-activity-item")
@@ -25,7 +26,7 @@ public class ProjectActivityItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectActivityItemResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<ProjectActivityItemResponse> findById(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
                 .body(service.findById(id));
@@ -47,13 +48,13 @@ public class ProjectActivityItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectActivityItemResponse> update(@PathVariable Long id, @RequestBody ProjectActivityItemRequest projectActivityItemRequest) {
+    public ResponseEntity<ProjectActivityItemResponse> update(@PathVariable UUID id, @RequestBody ProjectActivityItemRequest projectActivityItemRequest) {
         return ResponseEntity.ok()
                 .body(service.update(projectActivityItemRequest, id));
     }

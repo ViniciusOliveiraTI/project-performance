@@ -4,13 +4,18 @@ import com.viniciusdev.project_performance.common.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectRequest;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectResponse;
 import com.viniciusdev.project_performance.features.project.entities.Project;
+import com.viniciusdev.project_performance.features.projectActivity.ProjectActivityMapper;
+import com.viniciusdev.project_performance.features.projectActivity.dtos.ProjectActivityResponse;
+import com.viniciusdev.project_performance.features.proposal.ProposalMapper;
 import com.viniciusdev.project_performance.features.proposal.ProposalRepository;
+import com.viniciusdev.project_performance.features.proposal.dtos.ProposalResponse;
 import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProjectService {
@@ -22,60 +27,86 @@ public class ProjectService {
     private ProjectRepository projectrepository;
 
     @Autowired
-    private ProjectMapper mapper;
+    private ProjectMapper projectMapper;
+
+    @Autowired
+    private ProposalMapper proposalMapper;
+
+    @Autowired
+    private ProjectActivityMapper projectActivityMapper;
 
     public List<ProjectResponse> findAll() {
         return projectrepository.findAll()
                 .stream()
-                .map(mapper::entityToResponse).toList();
+                .map(projectMapper::entityToResponse).toList();
     }
 
-    public ProjectResponse findById(Long id) {
-        return mapper.entityToResponse(
+    public ProjectResponse findById(UUID id) {
+        return projectMapper.entityToResponse(
                 projectrepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Project with id '%d' not found".formatted(id))));
+                .orElseThrow(() -> new NotFoundException("Project with id '%s' not found".formatted(id))));
     }
 
     public ProjectResponse create(ProjectRequest projectRequest) {
 
         Proposal proposal = proposalRepository
                 .findById(projectRequest.proposalId())
-                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(projectRequest.proposalId())));
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(projectRequest.proposalId())));
 
-        Project project = mapper.requestToEntity(projectRequest);
+        Project project = projectMapper.requestToEntity(projectRequest);
 
         project.setProposal(proposal);
 
         Project saved = projectrepository.save(project);
 
-        return mapper.entityToResponse(saved);
+        return projectMapper.entityToResponse(saved);
 
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         if (!projectrepository.existsById(id)) {
-            throw new NotFoundException("Project with id '%d' not found".formatted(id));
+            throw new NotFoundException("Project with id '%s' not found".formatted(id));
         };
         try {
             projectrepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new NotFoundException("Project with id '%d' cannot be deleted due to relations".formatted(id));
+            throw new NotFoundException("Project with id '%s' cannot be deleted due to relations".formatted(id));
         }
     }
 
-    public ProjectResponse update(ProjectRequest projectRequest, Long id) {
+    public ProjectResponse update(ProjectRequest projectRequest, UUID id) {
 
         Project project = projectrepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Project with id '%d' not found".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Project with id '%s' not found".formatted(id)));
 
-        mapper.updateEntityFromRequest(project, projectRequest);
+        projectMapper.updateEntityFromRequest(project, projectRequest);
 
         Proposal proposal = proposalRepository.findById(projectRequest.proposalId())
-                .orElseThrow(() -> new NotFoundException("Proposal with id '%d' not found".formatted(projectRequest.proposalId())));
+                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(projectRequest.proposalId())));
 
         project.setProposal(proposal);
 
-        return mapper.entityToResponse(projectrepository.save(project));
+        return projectMapper.entityToResponse(projectrepository.save(project));
+    }
+
+    public List<ProjectActivityResponse> findAllActivities(UUID id) {
+
+        Project project = projectrepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Project with id '%s' not found".formatted(id)));
+
+        return project.getActivities()
+                .stream()
+                .map(projectActivityMapper::entityToResponse)
+                .toList();
+
+    }
+
+    public ProposalResponse findProposal(UUID id) {
+
+        Project project = projectrepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Project with id '%s' not found".formatted(id)));
+
+        return proposalMapper.entityToResponse(project.getProposal());
     }
 }
