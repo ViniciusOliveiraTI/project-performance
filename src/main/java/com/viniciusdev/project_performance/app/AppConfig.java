@@ -8,6 +8,8 @@ import com.viniciusdev.project_performance.features.project.entities.ProjectStat
 import com.viniciusdev.project_performance.features.projectActivity.ProjectActivityRepository;
 import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivity;
 import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivityStatus;
+import com.viniciusdev.project_performance.features.projectActivityItem.ProjectActivityItemRepository;
+import com.viniciusdev.project_performance.features.projectActivityItem.entities.ProjectActivityItem;
 import com.viniciusdev.project_performance.features.proposal.ProposalRepository;
 import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
 import com.viniciusdev.project_performance.features.proposal.entities.ProposalStatus;
@@ -35,6 +37,7 @@ public class AppConfig implements CommandLineRunner {
     @Autowired private ProposalQuotationItemRepository proposalQuotationItemRepository;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectActivityRepository projectActivityRepository;
+    @Autowired private ProjectActivityItemRepository projectActivityItemRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -95,6 +98,18 @@ public class AppConfig implements CommandLineRunner {
         List<ProjectActivity> projectActivities = Arrays.asList(pa1, pa2, pa3, pa4, pa5, pa6, pa7);
 
         projectActivityRepository.saveAll(projectActivities);
+
+        for (ProjectActivity projectActivity : projectActivities) {
+            int itemsCount = ThreadLocalRandom.current().nextInt(2, 6);
+
+            for (int i = 0; i < itemsCount; i++) {
+                BigDecimal quantity = BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(1, 20));
+                BigDecimal unitPrice = BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(500, 5000));
+
+                ProjectActivityItem item = new ProjectActivityItem(projectActivity, LocalDate.now(), quantity, unitPrice);
+                projectActivityItemRepository.save(item);
+            }
+        }
 
     }
 }

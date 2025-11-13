@@ -1,11 +1,13 @@
 package com.viniciusdev.project_performance.features.projectActivity.entities;
 
 import com.viniciusdev.project_performance.features.project.entities.Project;
+import com.viniciusdev.project_performance.features.projectActivityItem.entities.ProjectActivityItem;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_project_activity")
@@ -18,6 +20,10 @@ public class ProjectActivity {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @OneToMany(mappedBy = "projectActivity")
+    private Set<ProjectActivityItem> items;
+
     private String description;
     private LocalDate expectedStartDate;
     private LocalDate expectedEndDate;
