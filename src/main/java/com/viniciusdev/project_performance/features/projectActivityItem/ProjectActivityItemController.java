@@ -1,7 +1,10 @@
 package com.viniciusdev.project_performance.features.projectActivityItem;
 
+import com.viniciusdev.project_performance.features.projectActivity.dtos.ProjectActivityResponse;
+import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivity;
 import com.viniciusdev.project_performance.features.projectActivityItem.dtos.ProjectActivityItemRequest;
 import com.viniciusdev.project_performance.features.projectActivityItem.dtos.ProjectActivityItemResponse;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +60,13 @@ public class ProjectActivityItemController {
     public ResponseEntity<ProjectActivityItemResponse> update(@PathVariable UUID id, @RequestBody ProjectActivityItemRequest projectActivityItemRequest) {
         return ResponseEntity.ok()
                 .body(service.update(projectActivityItemRequest, id));
+    }
+
+    @GetMapping("/{id}/activity")
+    public ResponseEntity<ProjectActivityResponse> findActivity(@PathVariable UUID id) {
+        return ResponseEntity
+                .ok()
+                .body(service.findActivity(id));
     }
 
 }

@@ -2,6 +2,8 @@ package com.viniciusdev.project_performance.features.projectActivityItem;
 
 import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
 import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.features.projectActivity.ProjectActivityMapper;
+import com.viniciusdev.project_performance.features.projectActivity.dtos.ProjectActivityResponse;
 import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivity;
 import com.viniciusdev.project_performance.features.projectActivity.ProjectActivityRepository;
 import com.viniciusdev.project_performance.features.projectActivityItem.dtos.ProjectActivityItemRequest;
@@ -24,16 +26,19 @@ public class ProjectActivityItemService {
     private ProjectActivityItemRepository projectActivityItemRepository;
 
     @Autowired
-    private ProjectActivityItemMapper mapper;
+    private ProjectActivityItemMapper projectActivityItemMapper;
+
+    @Autowired
+    private ProjectActivityMapper projectActivityMapper;
 
     public List<ProjectActivityItemResponse> findAll() {
         return projectActivityItemRepository.findAll()
                 .stream()
-                .map(mapper::entityToResponse).toList();
+                .map(projectActivityItemMapper::entityToResponse).toList();
     }
 
     public ProjectActivityItemResponse findById(UUID id) {
-        return mapper.entityToResponse(
+        return projectActivityItemMapper.entityToResponse(
                 projectActivityItemRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%s' not found".formatted(id))));
     }
@@ -44,13 +49,13 @@ public class ProjectActivityItemService {
                 .findById(projectActivityItemRequest.activityId())
                 .orElseThrow(() -> new NotFoundException("Project Activity with id '%s' not found".formatted(projectActivityItemRequest.activityId())));
 
-        ProjectActivityItem projectActivityItem = mapper.requestToEntity(projectActivityItemRequest);
+        ProjectActivityItem projectActivityItem = projectActivityItemMapper.requestToEntity(projectActivityItemRequest);
 
         projectActivityItem.setProjectActivity(projectActivity);
 
         ProjectActivityItem saved = projectActivityItemRepository.save(projectActivityItem);
 
-        return mapper.entityToResponse(saved);
+        return projectActivityItemMapper.entityToResponse(saved);
 
     }
 
@@ -71,13 +76,22 @@ public class ProjectActivityItemService {
         ProjectActivityItem projectActivityItem = projectActivityItemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%s' not found".formatted(id)));
 
-        mapper.updateEntityFromRequest(projectActivityItem, projectActivityItemRequest);
+        projectActivityItemMapper.updateEntityFromRequest(projectActivityItem, projectActivityItemRequest);
 
         ProjectActivity projectActivity = projectActivityRepository.findById(projectActivityItemRequest.activityId())
                 .orElseThrow(() -> new NotFoundException("Project Activity with id '%s' not found".formatted(projectActivityItemRequest.activityId())));
 
         projectActivityItem.setProjectActivity(projectActivity);
 
-        return mapper.entityToResponse(projectActivityItemRepository.save(projectActivityItem));
+        return projectActivityItemMapper.entityToResponse(projectActivityItemRepository.save(projectActivityItem));
+    }
+
+    public ProjectActivityResponse findActivity(UUID id) {
+
+        ProjectActivityItem projectActivityItem = projectActivityItemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Project Activity Item with id '%s' not found".formatted(id)));
+
+        return projectActivityMapper.entityToResponse(projectActivityItem.getProjectActivity());
+
     }
 }
