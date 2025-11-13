@@ -9,22 +9,29 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_proposal")
 public class Proposal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "proposal_id")
+    private UUID id;
 
+    @Column(name = "code")
     private Integer code;
+
+    @Column(name = "description")
     private String description;
     // private User manager;
+
+    @Column(name = "emission_date")
     private LocalDate emissionDate;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @OneToMany(mappedBy = "proposal")
@@ -33,24 +40,31 @@ public class Proposal {
     @OneToMany(mappedBy = "proposal")
     private Set<Project> projects;
 
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ProposalStatus status;
 
+    @Column(name = "offered_price")
     private BigDecimal offeredPrice;
 
     public Proposal() {}
 
-    public Proposal(Integer code, String description, LocalDate emissionDate, ProposalStatus status, BigDecimal offeredPrice, Customer customer) {
+    public Proposal(UUID id, Integer code, String description, LocalDate emissionDate, Customer customer, ProposalStatus status, BigDecimal offeredPrice) {
+        this.id = id;
         this.code = code;
         this.description = description;
         this.emissionDate = emissionDate;
+        this.customer = customer;
         this.status = status;
         this.offeredPrice = offeredPrice;
-        this.customer = customer;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Integer getCode() {
@@ -77,6 +91,30 @@ public class Proposal {
         this.emissionDate = emissionDate;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Set<ProposalQuotation> getProposalQuotations() {
+        return proposalQuotations;
+    }
+
+    public void setProposalQuotations(Set<ProposalQuotation> proposalQuotations) {
+        this.proposalQuotations = proposalQuotations;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
+
     public ProposalStatus getStatus() {
         return status;
     }
@@ -91,14 +129,6 @@ public class Proposal {
 
     public void setOfferedPrice(BigDecimal offeredPrice) {
         this.offeredPrice = offeredPrice;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     @Override
@@ -121,6 +151,8 @@ public class Proposal {
                 ", description='" + description + '\'' +
                 ", emissionDate=" + emissionDate +
                 ", customer=" + customer +
+                ", proposalQuotations=" + proposalQuotations +
+                ", projects=" + projects +
                 ", status=" + status +
                 ", offeredPrice=" + offeredPrice +
                 '}';

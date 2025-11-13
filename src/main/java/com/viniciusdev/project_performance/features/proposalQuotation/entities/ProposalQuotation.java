@@ -8,51 +8,50 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_proposal_quotation")
 public class ProposalQuotation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "proposal_quotation_id")
+    private UUID id;
+
+    @Column(name = "creation_date")
+    private LocalDate creationDate;
+
+    @Column(name = "version")
+    private Integer version;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ProposalQuotationStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "proposal_id", nullable = false)
+    @JoinColumn(name = "proposal_id")
     private Proposal proposal;
 
     @OneToMany(mappedBy = "proposalQuotation")
     private Set<ProposalQuotationItem> proposalQuotationItems;
 
-    private LocalDate creationDate;
-    private Integer version;
-
-    @Enumerated(EnumType.STRING)
-    private ProposalQuotationStatus status;
-
     public ProposalQuotation() {}
 
-    public ProposalQuotation(Proposal proposal, LocalDate creationDate, Integer version, ProposalQuotationStatus status) {
-        this.proposal = proposal;
+    public ProposalQuotation(UUID id, LocalDate creationDate, Integer version, ProposalQuotationStatus status, Proposal proposal) {
+        this.id = id;
         this.creationDate = creationDate;
         this.version = version;
         this.status = status;
+        this.proposal = proposal;
     }
 
-    public ProposalQuotationStatus getStatus() {
-        return status;
+    public UUID getId() {
+        return id;
     }
 
-    public void setStatus(ProposalQuotationStatus status) {
-        this.status = status;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public LocalDate getCreationDate() {
@@ -63,6 +62,22 @@ public class ProposalQuotation {
         this.creationDate = creationDate;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public ProposalQuotationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProposalQuotationStatus status) {
+        this.status = status;
+    }
+
     public Proposal getProposal() {
         return proposal;
     }
@@ -71,20 +86,12 @@ public class ProposalQuotation {
         this.proposal = proposal;
     }
 
-    public Long getId() {
-        return id;
+    public Set<ProposalQuotationItem> getProposalQuotationItems() {
+        return proposalQuotationItems;
     }
 
-    public BigDecimal totalCharge() {
-        return proposalQuotationItems.stream()
-                .map(ProposalQuotationItem::getCharge)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public BigDecimal totalPrice() {
-        return proposalQuotationItems.stream()
-                .map(ProposalQuotationItem::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public void setProposalQuotationItems(Set<ProposalQuotationItem> proposalQuotationItems) {
+        this.proposalQuotationItems = proposalQuotationItems;
     }
 
     @Override
@@ -103,10 +110,11 @@ public class ProposalQuotation {
     public String toString() {
         return "ProposalQuotation{" +
                 "id=" + id +
-                ", proposal=" + proposal +
                 ", creationDate=" + creationDate +
                 ", version=" + version +
                 ", status=" + status +
+                ", proposal=" + proposal +
+                ", proposalQuotationItems=" + proposalQuotationItems +
                 '}';
     }
 }

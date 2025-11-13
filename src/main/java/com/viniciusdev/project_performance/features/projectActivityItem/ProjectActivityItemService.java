@@ -26,9 +26,6 @@ public class ProjectActivityItemService {
     private ProjectActivityItemMapper mapper;
 
     public List<ProjectActivityItemResponse> findAll() {
-
-        System.out.println(projectActivityItemRepository.findAll());
-
         return projectActivityItemRepository.findAll()
                 .stream()
                 .map(mapper::entityToResponse).toList();

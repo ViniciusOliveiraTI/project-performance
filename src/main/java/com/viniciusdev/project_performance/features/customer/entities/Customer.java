@@ -5,16 +5,21 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_customer")
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "customer_id")
+    private UUID id;
 
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
 
     @OneToMany(mappedBy = "customer")
@@ -22,17 +27,18 @@ public class Customer {
 
     protected Customer() {}
 
-    public Customer(String firstName, String lastName) {
+    public Customer(UUID id, String firstName, String lastName) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public UUID getId() {
+        return id;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -43,8 +49,20 @@ public class Customer {
         this.firstName = firstName;
     }
 
-    public Long getId() {
-        return id;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Set<Proposal> getProposals() {
+        return proposals;
+    }
+
+    public void setProposals(Set<Proposal> proposals) {
+        this.proposals = proposals;
     }
 
     @Override

@@ -8,47 +8,58 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_project")
 public class Project {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "project_id")
+    private UUID id;
+
+    @Column(name = "approval_date")
+    private LocalDate approvalDate;
+
+    @Column(name = "approved_price")
+    private BigDecimal approvedPrice;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "proposal_id", nullable = false)
+    @JoinColumn(name = "proposal_id")
     private Proposal proposal;
 
     @OneToMany(mappedBy = "project")
     private Set<ProjectActivity> activities;
 
-    private LocalDate approvalDate;
-    private BigDecimal approvedPrice;
-
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus status;
-
     public Project() {}
 
-    public Project(ProjectStatus status, BigDecimal approvedPrice, LocalDate approvalDate, Proposal proposal) {
-        this.status = status;
-        this.approvedPrice = approvedPrice;
+    public Project(UUID id, LocalDate approvalDate, BigDecimal approvedPrice, ProjectStatus status, Proposal proposal) {
+        this.id = id;
         this.approvalDate = approvalDate;
+        this.approvedPrice = approvedPrice;
+        this.status = status;
         this.proposal = proposal;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public Proposal getProposal() {
-        return proposal;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public void setProposal(Proposal proposal) {
-        this.proposal = proposal;
+    public Set<ProjectActivity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(Set<ProjectActivity> activities) {
+        this.activities = activities;
     }
 
     public LocalDate getApprovalDate() {
@@ -75,6 +86,14 @@ public class Project {
         this.status = status;
     }
 
+    public Proposal getProposal() {
+        return proposal;
+    }
+
+    public void setProposal(Proposal proposal) {
+        this.proposal = proposal;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
@@ -91,10 +110,11 @@ public class Project {
     public String toString() {
         return "Project{" +
                 "id=" + id +
-                ", proposal=" + proposal +
+                ", activities=" + activities +
                 ", approvalDate=" + approvalDate +
                 ", approvedPrice=" + approvedPrice +
                 ", status=" + status +
+                ", proposal=" + proposal +
                 '}';
     }
 }

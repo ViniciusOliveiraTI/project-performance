@@ -37,7 +37,7 @@ public class ProjectActivityItemController {
         ProjectActivityItemResponse object = service.create(projectActivityItemRequest);
 
         URI location = uriBuilder
-                .path("/project/{id}")
+                .path("/project-activity-item/{id}")
                 .buildAndExpand(object.id())
                 .toUri();
 

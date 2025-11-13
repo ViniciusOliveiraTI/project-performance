@@ -6,42 +6,46 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_project_projectActivity_item")
 public class ProjectActivityItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "project_activity_item_id")
+    private UUID id;
+
+    @Column(name = "conclusion_date")
+    private LocalDate conclusionDate;
+
+    @Column(name = "charge")
+    private BigDecimal charge;
+
+    @Column(name = "cost")
+    private BigDecimal cost;
 
     @ManyToOne
-    @JoinColumn(name = "projectActivity_id")
+    @JoinColumn(name = "project_activity_id")
     private ProjectActivity projectActivity;
-
-    private LocalDate conclusionDate;
-    private BigDecimal charge;
-    private BigDecimal cost;
 
     public ProjectActivityItem() {}
 
-    public ProjectActivityItem(ProjectActivity projectActivity, LocalDate conclusionDate, BigDecimal charge, BigDecimal cost) {
-        this.projectActivity = projectActivity;
+    public ProjectActivityItem(UUID id, LocalDate conclusionDate, BigDecimal charge, BigDecimal cost, ProjectActivity projectActivity) {
+        this.id = id;
         this.conclusionDate = conclusionDate;
         this.charge = charge;
         this.cost = cost;
+        this.projectActivity = projectActivity;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public ProjectActivity getProjectActivity() {
-        return projectActivity;
-    }
-
-    public void setProjectActivity(ProjectActivity projectActivity) {
-        this.projectActivity = projectActivity;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public LocalDate getConclusionDate() {
@@ -68,6 +72,14 @@ public class ProjectActivityItem {
         this.cost = cost;
     }
 
+    public ProjectActivity getProjectActivity() {
+        return projectActivity;
+    }
+
+    public void setProjectActivity(ProjectActivity projectActivity) {
+        this.projectActivity = projectActivity;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
@@ -84,10 +96,10 @@ public class ProjectActivityItem {
     public String toString() {
         return "ProjectActivityItem{" +
                 "id=" + id +
-                ", projectActivity=" + projectActivity +
                 ", conclusionDate=" + conclusionDate +
                 ", charge=" + charge +
                 ", cost=" + cost +
+                ", projectActivity=" + projectActivity +
                 '}';
     }
 }

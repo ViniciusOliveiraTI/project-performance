@@ -5,32 +5,42 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_proposal_quotation_item")
 public class ProposalQuotationItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "proposal_quotation_item_id")
+    private UUID id;
+
+    @Column(name = "charge")
+    private BigDecimal charge;
+
+    @Column(name = "price")
+    private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "proposal_quotation_id", nullable = false)
+    @JoinColumn(name = "proposal_quotation_id")
     private ProposalQuotation proposalQuotation;
-
-    private BigDecimal charge;
-    private BigDecimal price;
 
     public ProposalQuotationItem() {}
 
-    public ProposalQuotationItem(BigDecimal price, BigDecimal charge, ProposalQuotation proposalQuotation) {
-        this.price = price;
-        this.charge = charge;
+    public ProposalQuotationItem(UUID id, ProposalQuotation proposalQuotation, BigDecimal charge, BigDecimal price) {
+        this.id = id;
         this.proposalQuotation = proposalQuotation;
+        this.charge = charge;
+        this.price = price;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public ProposalQuotation getProposalQuotation() {

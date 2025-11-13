@@ -37,7 +37,7 @@ public class ProjectActivityController {
         ProjectActivityResponse object = service.create(projectRequest);
 
         URI location = uriBuilder
-                .path("/project/{id}")
+                .path("/project-activity/{id}")
                 .buildAndExpand(object.id())
                 .toUri();
 

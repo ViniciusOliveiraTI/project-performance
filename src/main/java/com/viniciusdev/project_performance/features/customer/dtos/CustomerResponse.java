@@ -1,3 +1,5 @@
 package com.viniciusdev.project_performance.features.customer.dtos;
 
-public record CustomerResponse(Long id, String firstName, String lastName) { }
+import java.util.UUID;
+
+public record CustomerResponse(UUID id, String firstName, String lastName) { }
