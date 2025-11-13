@@ -5,6 +5,9 @@ import com.viniciusdev.project_performance.features.customer.entities.Customer;
 import com.viniciusdev.project_performance.features.project.ProjectRepository;
 import com.viniciusdev.project_performance.features.project.entities.Project;
 import com.viniciusdev.project_performance.features.project.entities.ProjectStatus;
+import com.viniciusdev.project_performance.features.projectActivity.ProjectActivityRepository;
+import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivity;
+import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivityStatus;
 import com.viniciusdev.project_performance.features.proposal.ProposalRepository;
 import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
 import com.viniciusdev.project_performance.features.proposal.entities.ProposalStatus;
@@ -31,6 +34,7 @@ public class AppConfig implements CommandLineRunner {
     @Autowired private ProposalQuotationRepository proposalQuotationRepository;
     @Autowired private ProposalQuotationItemRepository proposalQuotationItemRepository;
     @Autowired private ProjectRepository projectRepository;
+    @Autowired private ProjectActivityRepository projectActivityRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -79,6 +83,18 @@ public class AppConfig implements CommandLineRunner {
         Project pj5 = new Project(ProjectStatus.NOT_STARTED, BigDecimal.valueOf(70000), LocalDate.parse("2025-11-27"), p5);
 
         projectRepository.saveAll(Arrays.asList(pj1, pj2, pj3, pj4, pj5));
+
+        ProjectActivity pa1 = new ProjectActivity(pj1, "Lista de documentos", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.IN_PROGRESS);
+        ProjectActivity pa2 = new ProjectActivity(pj1, "Visita Técnica", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.COMPLETED);
+        ProjectActivity pa3 = new ProjectActivity(pj2, "Visita Técnica", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.COMPLETED);
+        ProjectActivity pa4 = new ProjectActivity(pj3, "Avaliar dados em campo", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.COMPLETED);
+        ProjectActivity pa5 = new ProjectActivity(pj3, "Gerar excel para geração dos documentos", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.LATE);
+        ProjectActivity pa6 = new ProjectActivity(pj4, "Entrar em contato com o gerente do projeto", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.LATE);
+        ProjectActivity pa7 = new ProjectActivity(pj1, "Lista de documentos", LocalDate.parse("2025-02-23"), LocalDate.parse("2025-02-26"), ProjectActivityStatus.IN_PROGRESS);
+
+        List<ProjectActivity> projectActivities = Arrays.asList(pa1, pa2, pa3, pa4, pa5, pa6, pa7);
+
+        projectActivityRepository.saveAll(projectActivities);
 
     }
 }
