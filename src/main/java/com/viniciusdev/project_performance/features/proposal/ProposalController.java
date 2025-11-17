@@ -8,6 +8,7 @@ import com.viniciusdev.project_performance.features.proposalQuotation.dtos.Propo
 import com.viniciusdev.project_performance.features.proposalQuotation.entities.ProposalQuotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -23,6 +24,7 @@ public class ProposalController {
     private ProposalService service;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProposalResponse>> findAll() {
         return ResponseEntity
                 .ok()

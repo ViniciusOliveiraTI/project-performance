@@ -1,4 +1,4 @@
-package com.viniciusdev.project_performance.app;
+package com.viniciusdev.project_performance.app.config;
 
 import com.viniciusdev.project_performance.features.customer.CustomerRepository;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
