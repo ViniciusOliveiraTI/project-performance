@@ -1,4 +1,4 @@
-package com.viniciusdev.project_performance.features.auth;
+package com.viniciusdev.project_performance.features.auth.repositories;
 
 import com.viniciusdev.project_performance.features.auth.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

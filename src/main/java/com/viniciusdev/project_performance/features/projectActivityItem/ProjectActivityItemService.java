@@ -1,7 +1,7 @@
 package com.viniciusdev.project_performance.features.projectActivityItem;
 
-import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.projectActivity.ProjectActivityMapper;
 import com.viniciusdev.project_performance.features.projectActivity.dtos.ProjectActivityResponse;
 import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivity;

@@ -1,6 +1,6 @@
 package com.viniciusdev.project_performance.features.projectActivity;
 
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.project.ProjectMapper;
 import com.viniciusdev.project_performance.features.project.ProjectRepository;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectResponse;
@@ -10,7 +10,6 @@ import com.viniciusdev.project_performance.features.projectActivity.dtos.Project
 import com.viniciusdev.project_performance.features.projectActivity.entities.ProjectActivity;
 import com.viniciusdev.project_performance.features.projectActivityItem.ProjectActivityItemMapper;
 import com.viniciusdev.project_performance.features.projectActivityItem.dtos.ProjectActivityItemResponse;
-import com.viniciusdev.project_performance.features.projectActivityItem.entities.ProjectActivityItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

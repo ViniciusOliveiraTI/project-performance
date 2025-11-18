@@ -3,6 +3,7 @@ package com.viniciusdev.project_performance.features.proposal.entities;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
 import com.viniciusdev.project_performance.features.project.entities.Project;
 import com.viniciusdev.project_performance.features.proposalQuotation.entities.ProposalQuotation;
+import com.viniciusdev.project_performance.features.user.entities.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -25,7 +26,6 @@ public class Proposal {
 
     @Column(name = "description")
     private String description;
-    // private User manager;
 
     @Column(name = "emission_date")
     private LocalDate emissionDate;
@@ -36,6 +36,10 @@ public class Proposal {
 
     @Column(name = "offered_price")
     private BigDecimal offeredPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User manager;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -49,14 +53,16 @@ public class Proposal {
 
     public Proposal() {}
 
-    public Proposal(UUID id, Integer code, String description, LocalDate emissionDate, Customer customer, ProposalStatus status, BigDecimal offeredPrice) {
+
+    public Proposal(UUID id, Integer code, String description, LocalDate emissionDate, ProposalStatus status, BigDecimal offeredPrice, User manager, Customer customer) {
         this.id = id;
         this.code = code;
         this.description = description;
         this.emissionDate = emissionDate;
-        this.customer = customer;
         this.status = status;
         this.offeredPrice = offeredPrice;
+        this.manager = manager;
+        this.customer = customer;
     }
 
     public UUID getId() {
@@ -129,6 +135,14 @@ public class Proposal {
 
     public void setOfferedPrice(BigDecimal offeredPrice) {
         this.offeredPrice = offeredPrice;
+    }
+
+    public User getManager() {
+        return manager;
+    }
+
+    public void setManager(User manager) {
+        this.manager = manager;
     }
 
     @Override

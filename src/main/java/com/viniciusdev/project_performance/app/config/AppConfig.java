@@ -1,5 +1,7 @@
 package com.viniciusdev.project_performance.app.config;
 
+import com.viniciusdev.project_performance.features.auth.entities.Role;
+import com.viniciusdev.project_performance.features.auth.repositories.RoleRepository;
 import com.viniciusdev.project_performance.features.customer.CustomerRepository;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
 import com.viniciusdev.project_performance.features.project.ProjectRepository;
@@ -18,14 +20,18 @@ import com.viniciusdev.project_performance.features.proposalQuotation.entities.P
 import com.viniciusdev.project_performance.features.proposalQuotation.entities.ProposalQuotationStatus;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.ProposalQuotationItemRepository;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.entities.ProposalQuotationItem;
+import com.viniciusdev.project_performance.features.user.UserRepository;
+import com.viniciusdev.project_performance.features.user.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
@@ -38,9 +44,23 @@ public class AppConfig implements CommandLineRunner {
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectActivityRepository projectActivityRepository;
     @Autowired private ProjectActivityItemRepository projectActivityItemRepository;
+    @Autowired private RoleRepository roleRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
+
+        Role r1 = new Role(null, "ROLE_ADMIN");
+        Role r2 = new Role(null, "ROLE_BASIC");
+
+        roleRepository.saveAll(Arrays.asList(r1, r2));
+
+        User u1 = new User(null, "Vinicius Oliveira", "vinicius@gmail.com", passwordEncoder.encode("12345"));
+
+        u1.setRoles(Set.of(r1));
+
+        userRepository.save(u1);
 
         Customer c1 = new Customer(null,"BP", "Bunge");
         Customer c2 = new Customer(null,"GT", "Foods");

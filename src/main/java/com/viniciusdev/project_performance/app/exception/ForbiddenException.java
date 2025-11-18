@@ -1,20 +1,19 @@
-package com.viniciusdev.project_performance.common.exception;
+package com.viniciusdev.project_performance.app.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class DataIntegrityException extends RuntimeException {
-
+public class ForbiddenException extends RuntimeException {
     private final HttpStatus status;
     private final String code;
 
-    public DataIntegrityException(String message, String code, HttpStatus status) {
+    public ForbiddenException(String message, String code, HttpStatus status) {
         super(message);
         this.code = code;
         this.status = status;
     }
 
-    public DataIntegrityException(String message) {
-        this(message, "DATA_INTEGRITY_VIOLATION", HttpStatus.CONFLICT);
+    public ForbiddenException(String message) {
+        this(message, "FORBIDDEN", HttpStatus.FORBIDDEN);
     }
 
     public HttpStatus getStatus() {

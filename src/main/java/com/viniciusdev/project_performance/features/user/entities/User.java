@@ -2,6 +2,7 @@ package com.viniciusdev.project_performance.features.user.entities;
 
 import com.viniciusdev.project_performance.features.auth.dtos.LoginRequest;
 import com.viniciusdev.project_performance.features.auth.entities.Role;
+import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -26,13 +27,25 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "manager")
+    private Set<Proposal> proposals;
+
+    public User() {}
+
+    public User(UUID id, String name, String email, String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     public UUID getId() {
         return id;
@@ -72,6 +85,14 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<Proposal> getProposals() {
+        return proposals;
+    }
+
+    public void setProposals(Set<Proposal> proposals) {
+        this.proposals = proposals;
     }
 
     public boolean isLoginCorrect(LoginRequest request, PasswordEncoder passwordEncoder) {

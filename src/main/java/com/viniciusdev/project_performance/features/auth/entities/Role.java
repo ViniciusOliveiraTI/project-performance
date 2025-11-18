@@ -2,6 +2,9 @@ package com.viniciusdev.project_performance.features.auth.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "tb_role")
 public class Role {
@@ -35,20 +38,5 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public enum Values {
-        BASIC(1L),
-        ADMIN(2L);
-
-        long id;
-
-        Values(Long id) {
-            this.id = id;
-        }
-
-        public long getId() {
-            return id;
-        }
     }
 }

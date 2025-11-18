@@ -32,6 +32,7 @@ public class ProposalController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') || @proposalSecurity.isOwner(#id, authentication)")
     public ResponseEntity<ProposalResponse> findById(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
@@ -39,6 +40,7 @@ public class ProposalController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProposalResponse> create(@RequestBody ProposalRequest proposalRequest, UriComponentsBuilder uriBuilder) {
 
         ProposalResponse object = service.create(proposalRequest);
@@ -54,18 +56,21 @@ public class ProposalController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') || @proposalSecurity.isOwner(#id, authentication)")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') || @proposalSecurity.isOwner(#id, authentication)")
     public ResponseEntity<ProposalResponse> update(@PathVariable UUID id, @RequestBody ProposalRequest proposalRequest) {
         return ResponseEntity.ok()
                 .body(service.update(proposalRequest, id));
     }
 
     @GetMapping("/{id}/projects")
+    @PreAuthorize("hasRole('ADMIN') || @proposalSecurity.isOwner(#id, authentication)")
     public ResponseEntity<List<ProjectResponse>> findAllProjects(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
@@ -73,6 +78,7 @@ public class ProposalController {
     }
 
     @GetMapping("/{id}/quotations")
+    @PreAuthorize("hasRole('ADMIN') || @proposalSecurity.isOwner(#id, authentication)")
     public ResponseEntity<List<ProposalQuotationResponse>> findAllProposalQuotation(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()
@@ -80,6 +86,7 @@ public class ProposalController {
     }
 
     @GetMapping("/{id}/customer")
+    @PreAuthorize("hasRole('ADMIN') || @proposalSecurity.isOwner(#id, authentication)")
     public ResponseEntity<CustomerResponse> findCustomer(@PathVariable UUID id) {
         return ResponseEntity
                 .ok()

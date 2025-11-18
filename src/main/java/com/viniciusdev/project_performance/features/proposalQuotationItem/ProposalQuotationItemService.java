@@ -1,7 +1,7 @@
 package com.viniciusdev.project_performance.features.proposalQuotationItem;
 
-import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.proposalQuotation.ProposalQuotationMapper;
 import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationResponse;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemRequest;

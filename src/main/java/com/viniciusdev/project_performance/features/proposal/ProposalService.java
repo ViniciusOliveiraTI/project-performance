@@ -1,7 +1,7 @@
 package com.viniciusdev.project_performance.features.proposal;
 
-import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.customer.CustomerMapper;
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerResponse;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
@@ -13,9 +13,11 @@ import com.viniciusdev.project_performance.features.customer.CustomerRepository;
 import com.viniciusdev.project_performance.features.proposal.entities.Proposal;
 import com.viniciusdev.project_performance.features.proposalQuotation.ProposalQuotationMapper;
 import com.viniciusdev.project_performance.features.proposalQuotation.dtos.ProposalQuotationResponse;
+import com.viniciusdev.project_performance.features.user.UserRepository;
+import com.viniciusdev.project_performance.features.user.entities.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +44,9 @@ public class ProposalService {
     @Autowired
     private ProposalQuotationMapper proposalQuotationMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public List<ProposalResponse> findAll() {
         return proposalrepository.findAll()
                 .stream()
@@ -54,15 +59,22 @@ public class ProposalService {
                 .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id))));
     }
 
+    @Transactional
     public ProposalResponse create(ProposalRequest proposalRequest) {
 
         Customer customer = customerRepository
                 .findById(proposalRequest.customerId())
                 .orElseThrow(() -> new NotFoundException("Customer with id '%s' not found".formatted(proposalRequest.customerId())));
 
+        User manager = userRepository
+                .findById(proposalRequest.managerId())
+                .orElseThrow(() -> new NotFoundException("Manager with id '%s' not found".formatted(proposalRequest.managerId())));
+
         Proposal proposal = proposalMapper.requestToEntity(proposalRequest);
 
         proposal.setCustomer(customer);
+
+        proposal.setManager(manager);
 
         Proposal saved = proposalrepository.save(proposal);
 
@@ -84,15 +96,19 @@ public class ProposalService {
 
     public ProposalResponse update(ProposalRequest proposalRequest, UUID id) {
 
-        Proposal proposal = proposalrepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Proposal with id '%s' not found".formatted(id)));
-
-        proposalMapper.updateEntityFromRequest(proposal, proposalRequest);
-
-        Customer customer = customerRepository.findById(proposalRequest.customerId())
+        Customer customer = customerRepository
+                .findById(proposalRequest.customerId())
                 .orElseThrow(() -> new NotFoundException("Customer with id '%s' not found".formatted(proposalRequest.customerId())));
 
+        User manager = userRepository
+                .findById(proposalRequest.managerId())
+                .orElseThrow(() -> new NotFoundException("Manager with id '%s' not found".formatted(proposalRequest.managerId())));
+
+        Proposal proposal = proposalMapper.requestToEntity(proposalRequest);
+
         proposal.setCustomer(customer);
+
+        proposal.setManager(manager);
 
         return proposalMapper.entityToResponse(proposalrepository.save(proposal));
     }

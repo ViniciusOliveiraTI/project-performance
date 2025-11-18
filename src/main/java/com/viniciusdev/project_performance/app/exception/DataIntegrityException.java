@@ -1,20 +1,20 @@
-package com.viniciusdev.project_performance.common.exception;
+package com.viniciusdev.project_performance.app.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class NotFoundException extends RuntimeException {
+public class DataIntegrityException extends RuntimeException {
 
     private final HttpStatus status;
     private final String code;
 
-    public NotFoundException(String message, String code, HttpStatus status) {
+    public DataIntegrityException(String message, String code, HttpStatus status) {
         super(message);
         this.code = code;
         this.status = status;
     }
 
-    public NotFoundException(String message) {
-        this(message, "NOT_FOUND", HttpStatus.NOT_FOUND);
+    public DataIntegrityException(String message) {
+        this(message, "DATA_INTEGRITY_VIOLATION", HttpStatus.CONFLICT);
     }
 
     public HttpStatus getStatus() {

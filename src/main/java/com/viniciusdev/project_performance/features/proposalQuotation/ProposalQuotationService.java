@@ -1,7 +1,7 @@
 package com.viniciusdev.project_performance.features.proposalQuotation;
 
-import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.proposal.ProposalMapper;
 import com.viniciusdev.project_performance.features.proposal.ProposalRepository;
 import com.viniciusdev.project_performance.features.proposal.dtos.ProposalResponse;
@@ -11,7 +11,6 @@ import com.viniciusdev.project_performance.features.proposalQuotation.dtos.Propo
 import com.viniciusdev.project_performance.features.proposalQuotation.entities.ProposalQuotation;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.ProposalQuotationItemMapper;
 import com.viniciusdev.project_performance.features.proposalQuotationItem.dtos.ProposalQuotationItemResponse;
-import com.viniciusdev.project_performance.features.proposalQuotationItem.entities.ProposalQuotationItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

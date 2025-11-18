@@ -1,6 +1,6 @@
 package com.viniciusdev.project_performance.features.project;
 
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectRequest;
 import com.viniciusdev.project_performance.features.project.dtos.ProjectResponse;
 import com.viniciusdev.project_performance.features.project.entities.Project;

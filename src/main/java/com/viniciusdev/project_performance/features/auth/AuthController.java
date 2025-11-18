@@ -2,7 +2,6 @@ package com.viniciusdev.project_performance.features.auth;
 
 import com.viniciusdev.project_performance.features.auth.dtos.LoginRequest;
 import com.viniciusdev.project_performance.features.auth.dtos.LoginResponse;
-import com.viniciusdev.project_performance.features.auth.entities.Role;
 import com.viniciusdev.project_performance.features.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -44,17 +43,18 @@ public class AuthController {
         Instant now = Instant.now();
         Long expiresIn = 300L;
 
-        String scopes = optUser.get().getRoles()
+        List<String> scope = optUser.get()
+                .getRoles()
                 .stream()
-                .map(Role::getName)
-                .collect(Collectors.joining(" "));
+                .map(role -> role.getName())
+                .toList();
 
         var claims = JwtClaimsSet.builder()
-                .issuer("backend")
+                .issuer("project_performance_backend")
                 .subject(optUser.get().getId().toString())
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
-                .claim("scope", scopes)
+                .claim("scope", scope)
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

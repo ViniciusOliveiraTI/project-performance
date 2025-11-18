@@ -1,7 +1,7 @@
 package com.viniciusdev.project_performance.features.customer;
 
-import com.viniciusdev.project_performance.common.exception.DataIntegrityException;
-import com.viniciusdev.project_performance.common.exception.NotFoundException;
+import com.viniciusdev.project_performance.app.exception.DataIntegrityException;
+import com.viniciusdev.project_performance.app.exception.NotFoundException;
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerRequest;
 import com.viniciusdev.project_performance.features.customer.dtos.CustomerResponse;
 import com.viniciusdev.project_performance.features.customer.entities.Customer;
